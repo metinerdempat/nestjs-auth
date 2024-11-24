@@ -22,9 +22,18 @@ describe('AuthController', () => {
   beforeEach(async () => {
     userService = {
       findAll: () => {
-        return Promise.resolve([
-          { id: '1', email: 'test@test.com', password: 'test' } as User,
-        ]);
+        // return value of findAll function at user's.service.ts is Promise<PaginatedUserDto> type so we need to return an object with data and meta properties
+        return Promise.resolve({
+          data: [
+            { id: '1', email: 'test@test.com', password: 'test' } as User,
+          ],
+          meta: {
+            page: 1,
+            pageSize: 10,
+            totalItems: 1,
+            totalPages: 1,
+          }
+        });
       },
       findOneById: (id: string) => {
         return Promise.resolve({
@@ -56,26 +65,19 @@ describe('AuthController', () => {
         } as User);
       },
       deactivate: (id: string) => {
-        return Promise.resolve({
-          id,
-          email: 'test@test.com',
-          password: 'test',
-          active: false,
-        } as User);
+        // deactivate function in user's.service.ts is Promise<void> type so we don't need to return anything
+        return Promise.resolve();
       },
     };
     fakeAuthService = {
       // signup: () => {},
-      signin: (email: string, password: string) => {
-        return Promise.resolve({
-          data: {
-            id: '1',
-            email,
-            password,
-          } as User,
-          token: 'token',
-        });
-      },
+
+      /**
+       * The 'signin' function is not in 'auth.service.ts'. 
+       * There is a similar function called 'verifyUser', but I’m not sure if it’s the same or not. 
+       * Maybe 'signin' is not added yet. I’ll keep the code as it is for now.
+      **/
+     
     };
     fakeUserRepository = {
       create: jest.fn().mockImplementation((user) => {
